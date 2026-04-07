@@ -1,13 +1,14 @@
 # Hospital Guardian AI
 
-An AI-powered hospital management simulation and patient tracking system built with React, TypeScript, and Node.js.
+An AI-powered hospital management simulation and patient tracking system built with React, TypeScript, and Python with RL.
 
 ## 🚀 Features
 
+- **RL Environment** - Hospital resource management with gym-like API for training RL agents
 - **CareFlow Simulation Engine** - Hospital workflow optimization simulator with configurable difficulty levels
 - **Patient Management System** - Full-stack REST API for patient data management
 - **Real-time Dashboard** - Interactive charts and stats for hospital operations
-- **Type-Safe Architecture** - End-to-end TypeScript for reliability
+- **Type-Safe Architecture** - End-to-end TypeScript (frontend) and Python (backend)
 - **React Query Integration** - Efficient data fetching and caching on the frontend
 
 ## 📁 Project Structure
@@ -21,15 +22,22 @@ hospital-guardian-ai/
 │   ├── hooks/            # Custom React hooks
 │   ├── App.tsx
 │   └── main.tsx
-├── backend/              # Node.js Express API
+├── backend/              # Node.js Express API (Legacy)
 │   ├── src/
-│   │   ├── controllers/  # Request handlers
-│   │   ├── routes/       # API routes
-│   │   ├── services/     # Business logic
-│   │   ├── models/       # Data models
-│   │   └── index.ts      # Server entry point
+│   │   ├── controllers/
+│   │   ├── routes/
+│   │   ├── services/
+│   │   ├── models/
+│   │   └── index.ts
 │   ├── package.json
 │   └── tsconfig.json
+├── backend_py/           # Python FastAPI + RL Environment ⭐ (NEW)
+│   ├── app/
+│   │   └── main.py      # FastAPI application
+│   ├── environments/
+│   │   └── env.py       # HospitalEnv RL environment
+│   ├── requirements.txt
+│   └── README.md
 ├── public/               # Static assets
 └── package.json          # Frontend dependencies
 ```
@@ -44,7 +52,14 @@ hospital-guardian-ai/
 - React Query for data management
 - Recharts for data visualization
 
-**Backend:**
+**Backend (Python - Recommended):**
+- FastAPI
+- Python 3.8+
+- NumPy
+- Pydantic for schema validation
+- RL Environment (gym-like API with reset/step)
+
+**Backend (Node.js - Legacy):**
 - Node.js + Express
 - TypeScript
 - Zod for schema validation
@@ -55,6 +70,7 @@ hospital-guardian-ai/
 ### Prerequisites
 - Node.js (v18+)
 - npm or yarn
+- Python 3.8+ (for RL backend)
 
 ### Frontend Setup
 
@@ -71,7 +87,34 @@ npm run build
 
 Frontend runs on `http://localhost:8080` (or next available port)
 
-### Backend Setup
+### Backend Setup - Python (Recommended) ⭐
+
+```bash
+# Navigate to Python backend
+cd backend_py
+
+# Create virtual environment
+python -m venv venv
+
+# Activate virtual environment
+# Windows:
+venv\Scripts\activate
+# macOS/Linux:
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Create .env file
+cp .env.example .env
+
+# Start development server
+python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 4000
+```
+
+Backend runs on `http://localhost:4000`
+
+### Backend Setup - Node.js (Legacy)
 
 ```bash
 # Navigate to backend folder
@@ -89,35 +132,57 @@ npm run build
 
 Backend runs on `http://localhost:4000`
 
-## 📡 API Endpoints
+## 📡 API Endpoints (Python RL Backend)
 
 ### Health Check
 - `GET /health` - Server health status
 
-### Patients
-- `GET /api/patients` - Get all patients
-- `GET /api/patients/:id` - Get patient by ID
-- `POST /api/patients` - Create new patient
+### RL Environment
+- `POST /api/reset` - Reset environment to initial state
+- `POST /api/step` - Execute one step with action
+- `GET /api/state` - Get current environment state
+- `GET /api/config` - Get environment configuration
+- `GET /api/render` - Print current state to console
 
-**Create Patient Payload:**
+**Example Step Request:**
 ```json
 {
-  "name": "John Doe",
-  "age": 45,
-  "condition": "stable"
+  "action": 0
+}
+```
+
+**Example Step Response:**
+```json
+{
+  "state": {
+    "step": 5,
+    "total_patients": 8,
+    "icu_beds_used": 2,
+    "general_beds_used": 5,
+    "wait_queue_length": 1,
+    "patients": [...]
+  },
+  "reward": 5.25,
+  "done": false,
+  "info": {"episode_reward": null}
 }
 ```
 
 ## 🔧 Environment Variables
 
-Create a `.env` file in the root (frontend) and `backend/.env`:
+Create a `.env` file in the root (frontend) and `backend_py/.env` (or `backend/.env` for legacy):
 
 **.env (Frontend)**
 ```
 VITE_API_URL=http://localhost:4000
 ```
 
-**backend/.env**
+**backend_py/.env (Python)**
+```
+PORT=4000
+```
+
+**backend/.env (Node.js - Legacy)**
 ```
 PORT=4000
 ```
@@ -132,7 +197,18 @@ PORT=4000
 - `npm run test` - Run tests
 - `npm run test:watch` - Run tests in watch mode
 
-### Backend
+### Backend (Python)
+```bash
+cd backend_py
+
+# Development with auto-reload
+python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 4000
+
+# Production
+python -m uvicorn app.main:app --host 0.0.0.0 --port 4000
+```
+
+### Backend (Node.js - Legacy)
 - `npm run dev` - Start with auto-reload (tsx watch)
 - `npm run build` - Compile TypeScript
 - `npm start` - Start production server
