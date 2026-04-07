@@ -3,6 +3,7 @@ import { Play, Pause, RotateCcw, Zap, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { StatsGrid } from "@/components/StatsGrid";
 import { DeathsTreatedChart, ResourceChart, WaitTimeChart, RewardChart } from "@/components/SimCharts";
+import { PatientList } from "@/components/PatientList";
 import {
   CareFlowEnv, EASY_CONFIG, MEDIUM_CONFIG, HARD_CONFIG,
   runBaselineStep, grade,
@@ -199,6 +200,9 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
+
+        {/* Patient Data */}
+        <PatientList />
 
         {/* Stats */}
         {currentSnap && (
