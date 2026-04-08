@@ -114,26 +114,27 @@ if IMPORT_SUCCESS:
 else:
     print("Warning: Environment modules not imported. Inference will not work.")
 
-if __name__ == "__main__":
-    # Test the inference function
-    print("Testing inference...")
-
-    if IMPORT_SUCCESS:
-        # Test reset
-        result = inference({"action": "reset"})
-        print(f"Reset result: {result['status']}")
-
-        # Test step
-        result = inference({"action": "step", "data": {"action": -1}})
-        print(f"Step result: {result['status']}")
-
-        # Test get state
-        result = inference({"action": "get_state"})
-        print(f"Get state result: {result['status']}")
-
-        print("Inference tests completed!")
-    else:
-        print("Cannot test inference - modules not imported")
+# Remove the main block - OpenEnv handles the server
+# if __name__ == "__main__":
+#     # Test the inference function
+#     print("Testing inference...")
+#
+#     if IMPORT_SUCCESS:
+#         # Test reset
+#         result = inference({"action": "reset"})
+#         print(f"Reset result: {result['status']}")
+#
+#         # Test step
+#         result = inference({"action": "step", "data": {"action": -1}})
+#         print(f"Step result: {result['status']}")
+#
+#         # Test get state
+#         result = inference({"action": "get_state"})
+#         print(f"Get state result: {result['status']}")
+#
+#         print("Inference tests completed!")
+#     else:
+#         print("Cannot test inference - modules not imported")
 
 def get_state() -> Dict[str, Any]:
     """Get current environment state"""
