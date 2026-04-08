@@ -1,3 +1,15 @@
+---
+title: Hospital Guardian AI
+emoji: 🏥
+colorFrom: blue
+colorTo: green
+sdk: docker
+sdk_version: python3.11
+app_file: inference.py
+pinned: false
+license: mit
+---
+
 # Hospital Guardian AI
 
 An AI-powered hospital management simulation and patient tracking system built with React, TypeScript, and Python with RL.
@@ -165,6 +177,56 @@ Backend runs on `http://localhost:4000`
   "reward": 5.25,
   "done": false,
   "info": {"episode_reward": null}
+}
+```
+
+## 🤖 OpenEnv API (Hugging Face Spaces)
+
+The RL environment is deployed on Hugging Face Spaces using OpenEnv. All interactions go through the `/inference` endpoint.
+
+### Reset Environment
+```python
+POST /inference
+{
+  "action": "reset"
+}
+```
+
+### Step Environment
+```python
+POST /inference
+{
+  "action": "step",
+  "data": {
+    "action": 0  # Patient index to discharge, -1 for no action
+  }
+}
+```
+
+### Get Current State
+```python
+POST /inference
+{
+  "action": "get_state"
+}
+```
+
+**Response Format:**
+```json
+{
+  "status": "success",
+  "state": {
+    "step": 5,
+    "total_patients": 8,
+    "icu_beds_used": 2,
+    "general_beds_used": 5,
+    "wait_queue_length": 1,
+    "total_admitted": 0,
+    "total_discharged": 0,
+    "total_deaths": 0
+  },
+  "reward": 5.25,
+  "done": false
 }
 ```
 
