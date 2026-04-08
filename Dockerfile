@@ -9,14 +9,15 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements first for better caching
-COPY backend_py/requirements.txt .
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the entire project
-COPY . .
+# Copy the backend_py directory and inference.py
+COPY backend_py/ ./backend_py/
+COPY inference.py .
 
 # Expose port
 EXPOSE 7860
 
-# Start the application
-CMD ["python", "-m", "uvicorn", "backend_py.app.main:app", "--host", "0.0.0.0", "--port", "7860"]
+# Start the inference server
+CMD ["python", "inference.py"]
