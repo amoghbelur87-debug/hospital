@@ -1,5 +1,5 @@
 ---
 title: Hospital Guardian AI
-sdk: docker
-app_port: 7860
+sdk: openenv
+app_file: inference.py
 ---
