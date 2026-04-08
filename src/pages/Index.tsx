@@ -38,12 +38,12 @@ export default function Dashboard() {
 
   const task = TASKS[taskIdx];
 
-  const initEnv = useCallback(() => {
+  const initEnv = useCallback(async () => {
     if (intervalRef.current) clearInterval(intervalRef.current);
     setRunning(false);
     setFinalScore(null);
     const env = new CareFlowEnv(task.config);
-    env.reset();
+    await env.reset();
     envRef.current = env;
     const snap = env.snapshot();
     setSnapshots([snap]);
@@ -52,19 +52,19 @@ export default function Dashboard() {
 
   useEffect(() => { initEnv(); }, [initEnv]);
 
-  const doStep = useCallback(() => {
+  const doStep = useCallback(async () => {
     const env = envRef.current;
-    if (!env || env.done) {
+    if (!env || env.isDone()) {
       if (env) setFinalScore(grade(env));
       setRunning(false);
       if (intervalRef.current) clearInterval(intervalRef.current);
       return;
     }
-    runBaselineStep(env);
+    await runBaselineStep(env);
     const snap = env.snapshot();
     setSnapshots(prev => [...prev, snap]);
     setCurrentSnap(snap);
-    if (env.done) {
+    if (env.isDone()) {
       setFinalScore(grade(env));
       setRunning(false);
       if (intervalRef.current) clearInterval(intervalRef.current);
@@ -78,9 +78,9 @@ export default function Dashboard() {
     } else {
       setRunning(true);
       const delay = speed >= 100 ? 5 : Math.max(10, 200 / speed);
-      intervalRef.current = setInterval(() => {
+      intervalRef.current = setInterval(async () => {
         const stepsPerTick = speed >= 100 ? 10 : 1;
-        for (let i = 0; i < stepsPerTick; i++) doStep();
+        for (let i = 0; i < stepsPerTick; i++) await doStep();
       }, delay);
     }
   }, [running, speed, doStep]);
@@ -94,9 +94,9 @@ export default function Dashboard() {
     if (running) {
       if (intervalRef.current) clearInterval(intervalRef.current);
       const delay = speed >= 100 ? 5 : Math.max(10, 200 / speed);
-      intervalRef.current = setInterval(() => {
+      intervalRef.current = setInterval(async () => {
         const stepsPerTick = speed >= 100 ? 10 : 1;
-        for (let i = 0; i < stepsPerTick; i++) doStep();
+        for (let i = 0; i < stepsPerTick; i++) await doStep();
       }, delay);
     }
   }, [speed, running, doStep]);
