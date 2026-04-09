@@ -1,24 +1,11 @@
-FROM python:3.11-slim
+FROM python:3.10
 
-# Set working directory
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
+COPY . /app
 
-# Copy requirements first for better caching
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir fastapi uvicorn
 
-# Copy the backend_py directory and inference.py
-COPY backend_py/ ./backend_py/
-COPY inference.py .
-COPY app.py .
-
-# Expose port
 EXPOSE 7860
 
-# Start the FastAPI server
-CMD ["python", "app.py"]
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "7860"]
