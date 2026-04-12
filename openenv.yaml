@@ -1,0 +1,9 @@
+version: 1
+
+name: hospital-guardian-ai
+
+endpoints:
+  - path: /health
+    method: GET
+  - path: /reset
+    method: POST
